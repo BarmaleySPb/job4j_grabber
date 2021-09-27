@@ -2,6 +2,7 @@ package ru.job4j.grabber.utils;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 public class SqlRuDateTimeParser implements DateTimeParser {
@@ -26,14 +27,14 @@ public class SqlRuDateTimeParser implements DateTimeParser {
         LocalDateTime time;
         String[] str = parse.replace(",", "").replace(":", " ").split(" ");
         if (str[0].equals("вчера")) {
-            time = LocalDateTime.now()
+            time = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)
                     .minusDays(1)
                     .withHour(Integer.parseInt(str[1]))
                     .withMinute(Integer.parseInt(str[2]));
             return time;
         }
         if (str[0].equals("сегодня")) {
-            time = LocalDateTime.now()
+            time = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)
                     .withHour(Integer.parseInt(str[1]))
                     .withMinute(Integer.parseInt(str[2]));
             return time;

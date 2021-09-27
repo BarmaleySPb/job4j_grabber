@@ -62,7 +62,6 @@ public class AlertRabbit implements AutoCloseable {
             e.printStackTrace();
         }
 
-
         try {
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();

@@ -67,9 +67,7 @@ public class Grabber implements Grab {
             Parse parse = (Parse) map.get("parse");
             try {
                 List<Post> listOfPost = parse.list("https://www.sql.ru/forum/job-offers/");
-                for (Post post : listOfPost) {
-                    store.save(post);
-                }
+                listOfPost.forEach(store::save);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -105,12 +103,6 @@ public class Grabber implements Grab {
         Store store = grabber.store();
         SqlRuDateTimeParser sqlRuDateTimeParser = new SqlRuDateTimeParser();
         grabber.init(new SqlRuParse(sqlRuDateTimeParser), store, scheduler);
-
-        Grabber grabberWeb = new Grabber();
-        grabberWeb.cfg();
-        Scheduler schedulerWeb = grabberWeb.scheduler();
-        Store storeWeb = grabberWeb.store();
-        grabberWeb.init(new SqlRuParse(sqlRuDateTimeParser), storeWeb, schedulerWeb);
-        grabberWeb.web(storeWeb);
+        grabber.web(store);
     }
 }
