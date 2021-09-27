@@ -28,14 +28,8 @@ public class SqlRuParse implements Parse {
             Document doc = Jsoup.connect(link + numberPage).get();
             Elements row = doc.select(".postslisttopic");
             for (Element td : row) {
-                Post post = new Post();
                 Element href = td.child(0);
-                post.setLink(href.attr("href"));
-                post.setTitle(href.text());
-                Post temp = detail(href.attr("href"));
-                post.setCreated(temp.getCreated());
-                post.setDescription(temp.getDescription());
-                listOfLinks.add(post);
+                listOfLinks.add(detail(href.attr("href")));
             }
             numberPage++;
         }
@@ -45,7 +39,10 @@ public class SqlRuParse implements Parse {
     @Override
     public Post detail(String link) throws IOException {
         Post post = new Post();
+            post.setLink(link);
         Document docPost = Jsoup.connect(link).get();
+        Elements docPostTitle = docPost.select(".messageHeader");
+        post.setTitle(docPostTitle.get(0).parent().child(0).text());
         Elements docPostDescription = docPost.select(".msgBody");
         post.setDescription(docPostDescription.get(0).parent().child(1).text());
         Elements docPostCreated = docPost.select(".msgFooter");
