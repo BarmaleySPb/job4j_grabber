@@ -76,7 +76,7 @@ public class AlertRabbit implements AutoCloseable {
                     .withSchedule(times)
                     .build();
             scheduler.scheduleJob(job, trigger);
-            Thread.sleep(600000);
+            Thread.sleep(10000);
             scheduler.shutdown();
         } catch (SchedulerException se) {
             se.printStackTrace();
