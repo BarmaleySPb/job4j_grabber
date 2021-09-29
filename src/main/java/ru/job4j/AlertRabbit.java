@@ -2,10 +2,13 @@ package ru.job4j;
 
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import ru.job4j.grabber.utils.SqlRuDateTimeParser;
+import ru.job4j.html.SqlRuParse;
 
 import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Properties;
 
 import static org.quartz.JobBuilder.*;

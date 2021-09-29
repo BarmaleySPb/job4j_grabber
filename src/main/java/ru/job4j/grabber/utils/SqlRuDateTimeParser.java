@@ -13,7 +13,7 @@ public class SqlRuDateTimeParser implements DateTimeParser {
             Map.entry("апр", "APRIL"),
             Map.entry("май", "MAY"),
             Map.entry("июн", "JUNE"),
-            Map.entry("июл", "JULE"),
+            Map.entry("июл", "JULY"),
             Map.entry("авг", "AUGUST"),
             Map.entry("сен", "SEPTEMBER"),
             Map.entry("окт", "OCTOBER"),
@@ -23,13 +23,28 @@ public class SqlRuDateTimeParser implements DateTimeParser {
 
     @Override
     public LocalDateTime parse(String parse) {
+        LocalDateTime time;
         String[] str = parse.replace(",", "").replace(":", " ").split(" ");
-        return LocalDateTime.of(
+        if (str[0].equals("вчера")) {
+            time = LocalDateTime.now()
+                    .minusDays(1)
+                    .withHour(Integer.parseInt(str[1]))
+                    .withMinute(Integer.parseInt(str[2]));
+            return time;
+        }
+        if (str[0].equals("сегодня")) {
+            time = LocalDateTime.now()
+                    .withHour(Integer.parseInt(str[1]))
+                    .withMinute(Integer.parseInt(str[2]));
+            return time;
+        }
+        time = LocalDateTime.of(
                 Integer.parseInt("20" + str[2]),
                 Month.valueOf(MONTHS.get(str[1])),
                 Integer.parseInt(str[0]),
                 Integer.parseInt(str[3]),
                 Integer.parseInt(str[4])
         );
+        return time;
     }
 }
