@@ -2,6 +2,7 @@ package ru.job4j;
 
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import ru.job4j.grabber.PsqlStore;
 import ru.job4j.grabber.utils.SqlRuDateTimeParser;
 import ru.job4j.html.SqlRuParse;
 
@@ -46,6 +47,18 @@ public class AlertRabbit implements AutoCloseable {
     public static void main(String[] args) throws Exception {
         Properties config = readConfig();
         init(config);
+        SqlRuDateTimeParser dateTimeParser = new SqlRuDateTimeParser();
+        SqlRuParse sqlRuParse = new SqlRuParse(dateTimeParser);
+        List<Post> listOfPost = sqlRuParse.list("https://www.sql.ru/forum/job-offers/");
+        System.out.println(listOfPost.size());
+        PsqlStore psqlStore = new PsqlStore(config);
+        for (Post post : listOfPost) {
+            psqlStore.save(post);
+        }
+        System.out.println("All ready!!!");
+        System.out.println(psqlStore.getAll());
+        System.out.println(psqlStore.findById(45));
+
 
         try {
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -63,7 +76,7 @@ public class AlertRabbit implements AutoCloseable {
                     .withSchedule(times)
                     .build();
             scheduler.scheduleJob(job, trigger);
-            Thread.sleep(10000);
+            Thread.sleep(600000);
             scheduler.shutdown();
         } catch (SchedulerException se) {
             se.printStackTrace();

@@ -1,15 +1,31 @@
 package ru.job4j;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Post {
+
+    private static final DateTimeFormatter FORMATTER =
+            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     private int id;
     private String title;
     private String link;
     private String description;
     private LocalDateTime created;
+
+    public Post() {
+
+    }
+
+    public Post(String name, String text, String link, int id, LocalDateTime created) {
+        this.title = name;
+        this.description = text;
+        this.link = link;
+        this.id = id;
+        this.created = created;
+    }
 
     public int getId() {
         return id;
@@ -78,7 +94,7 @@ public class Post {
                 + ", title='" + title + '\''
                 + ", link='" + link + '\''
                 + ", description='" + description + '\''
-                + ", created=" + created
+                + ", created=" + FORMATTER.format(created)
                 + '}';
     }
 }
