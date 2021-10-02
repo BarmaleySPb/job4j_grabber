@@ -51,13 +51,16 @@ public class AlertRabbit implements AutoCloseable {
         SqlRuParse sqlRuParse = new SqlRuParse(dateTimeParser);
         List<Post> listOfPost = sqlRuParse.list("https://www.sql.ru/forum/job-offers/");
         System.out.println(listOfPost.size());
-        PsqlStore psqlStore = new PsqlStore(config);
-        for (Post post : listOfPost) {
-            psqlStore.save(post);
+        try (PsqlStore psqlStore = new PsqlStore(config)) {
+            for (Post post : listOfPost) {
+                psqlStore.save(post);
+            }
+            System.out.println("All ready!!!");
+            System.out.println(psqlStore.getAll());
+            System.out.println(psqlStore.findById(45));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        System.out.println("All ready!!!");
-        System.out.println(psqlStore.getAll());
-        System.out.println(psqlStore.findById(45));
 
 
         try {
@@ -94,8 +97,8 @@ public class AlertRabbit implements AutoCloseable {
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
             System.out.println("Rabbit runs here ...");
-            try (Connection connection = (Connection) context.getJobDetail().getJobDataMap().get("connection");
-                 PreparedStatement statement =
+                 Connection connection = (Connection) context.getJobDetail().getJobDataMap().get("connection");
+            try (PreparedStatement statement =
                          connection.prepareStatement("insert into rabbit (created_date) values (?);")) {
                 Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
                 statement.setTimestamp(1, timestamp);
